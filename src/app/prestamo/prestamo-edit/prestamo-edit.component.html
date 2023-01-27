@@ -46,8 +46,11 @@
     <div class="buttons">
         <button mat-stroked-button (click)="onClose()">Cerrar</button>
         <button mat-stroked-button [disabled]="validarFechaFin()" (click)="onSave()"
-        (ngModelChange) ="validarFechaFin()" required>Guardar</button>
+        (ngModelChange) ="validarFechaFin()" required
+        >Guardar</button>
         <mat-error *ngIf="fechaDevolucionInvalida" > La fecha de fin debe ser mayor o igual a la fecha de inicio</mat-error>
+        <mat-error *ngIf="tiempoPrestamoExcedido" > No puedes alquilar un juego por más de 14 días</mat-error>
+        
 
 
     </div>

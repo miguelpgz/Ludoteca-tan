@@ -6,6 +6,7 @@ import { GameService } from 'src/app/game/game.service';
 import { Client } from 'src/app/client/model/Client';
 import { PrestamoService } from '../prestamo.service';
 import { Prestamo } from '../model/Prestamo';
+import { elementAt } from 'rxjs';
 
 @Component({
     selector: 'app-prestamo-edit',
@@ -17,6 +18,8 @@ export class PrestamoEditComponent implements OnInit {
     prestamo: Prestamo; 
     clients: Client[];
     games: Game[];
+    fechaDevolucionInvalida : Boolean;
+    tiempoPrestamoExcedido: Boolean;
 
     constructor(
         public dialogRef: MatDialogRef<PrestamoEditComponent>,
@@ -61,8 +64,41 @@ export class PrestamoEditComponent implements OnInit {
         );
     }
 
+    validarFechaFin(){
+
+        const fechaInicio = new Date(this.prestamo.fecha_prestamo);
+        const fechaFin = new Date(this.prestamo.fecha_devolucion);
+        const diffTime = fechaFin.getTime() - fechaInicio.getTime();
+        const diffDays = diffTime / (1000 * 60 * 60 * 24)
+
+        //Si fecha fin < fecha inicio
+        if(diffDays < 0){
+            this.fechaDevolucionInvalida = true;
+            this.tiempoPrestamoExcedido = false;
+            return true;
+            
+        }
+
+        //Si el prestamo excede 14 días
+        if(diffDays>14){
+            this.tiempoPrestamoExcedido = true;
+            this.fechaDevolucionInvalida = false;
+            return true;
+            }
+        
+        
+        //Préstamo correcto
+        this.fechaDevolucionInvalida = false;
+        this.tiempoPrestamoExcedido = false;
+        return false;
+
+        
+       
+    }
+   
+
     onSave() {
-        this.prestamoService.savePrestamo(this.prestamo).subscribe(result => {
+        this.prestamoService.savePrestamo(this.prestamo).subscribe(reult => {
             this.dialogRef.close();
         });    
     }  
