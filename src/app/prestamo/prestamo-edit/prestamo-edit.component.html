@@ -25,14 +25,19 @@
 
         <mat-form-field>
             <mat-label>Fecha inicio</mat-label>
-            <input type="date" matInput placeholder="Fecha inicio del préstamo" [(ngModel)]="prestamo.fecha_prestamo" name="fechaPrestamo" required>
+            <input type="date" matInput placeholder="Fecha inicio del préstamo" 
+                [(ngModel)]="prestamo.fecha_prestamo" name="fechaPrestamo" required
+                (ngModelChange) ="validarFechaFin()" required>
             <mat-error>Fecha inicio no puede estar vacía</mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Fecha fin</mat-label>
-            <input type="date" matInput placeholder="Fecha fin del préstamo" [(ngModel)]="prestamo.fecha_devolucion" name="fechaDevolucion" required>
+            <input type="date" matInput placeholder="Fecha fin del préstamo" 
+                [(ngModel)]="prestamo.fecha_devolucion" name="fechaDevolucion" required
+                (ngModelChange) ="validarFechaFin()" required>
             <mat-error>Fecha fin no puede estar vacía</mat-error>
+
         </mat-form-field>
 
        
@@ -40,6 +45,10 @@
 
     <div class="buttons">
         <button mat-stroked-button (click)="onClose()">Cerrar</button>
-        <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+        <button mat-stroked-button [disabled]="validarFechaFin()" (click)="onSave()"
+        (ngModelChange) ="validarFechaFin()" required>Guardar</button>
+        <mat-error *ngIf="fechaDevolucionInvalida" > La fecha de fin debe ser mayor o igual a la fecha de inicio</mat-error>
+
+
     </div>
 </div>
