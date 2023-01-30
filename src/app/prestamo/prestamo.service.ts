@@ -23,6 +23,16 @@ export class PrestamoService {
         
     }
 
+    isPrested(prestamo: Prestamo) :Observable<Boolean>{
+        return this.http.post<Boolean>('http://localhost:8080/prestamo/check-availability',prestamo);
+        
+    }
+
+    exceedPrestamos(prestamo: Prestamo) :Observable<Boolean>{
+        return this.http.post<Boolean>('http://localhost:8080/prestamo/check-exceed',prestamo);
+        
+    }
+
     getPrestamosIni(pageable: Pageable): Observable<PrestamoPage> {
         return this.http.post<PrestamoPage>('http://localhost:8080/prestamo', {pageable:pageable});
 
@@ -43,7 +53,6 @@ export class PrestamoService {
         if (prestamo.id != null) {
             url += '/'+prestamo.id;
         }
-        console.log(prestamo);
         return this.http.put<void>(url, prestamo);
     }
 

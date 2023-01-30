@@ -20,6 +20,10 @@ export class PrestamoEditComponent implements OnInit {
     games: Game[];
     fechaDevolucionInvalida : Boolean;
     tiempoPrestamoExcedido: Boolean;
+    gamePrested: Boolean;
+    gamesExceded: Boolean;
+
+
 
     constructor(
         public dialogRef: MatDialogRef<PrestamoEditComponent>,
@@ -75,32 +79,64 @@ export class PrestamoEditComponent implements OnInit {
         if(diffDays < 0){
             this.fechaDevolucionInvalida = true;
             this.tiempoPrestamoExcedido = false;
-            return true;
+            
             
         }
 
         //Si el prestamo excede 14 días
-        if(diffDays>14){
+        else if(diffDays>14){
             this.tiempoPrestamoExcedido = true;
             this.fechaDevolucionInvalida = false;
-            return true;
+           
             }
         
         
         //Préstamo correcto
-        this.fechaDevolucionInvalida = false;
-        this.tiempoPrestamoExcedido = false;
-        return false;
-
+        else{
+            this.fechaDevolucionInvalida = false;
+            this.tiempoPrestamoExcedido = false;
+            
+        }
         
-       
+    }
+
+    isGamePrested(){
+        this.prestamoService.isPrested(this.prestamo).subscribe(
+            
+            result =>{
+            if (result){
+                this.gamePrested = true;
+                
+            }else{
+                this.gamePrested = false;
+            }
+          })
+
+    }
+
+    exceedGames(){
+        this.prestamoService.exceedPrestamos(this.prestamo).subscribe(
+            
+            result =>{
+            if (result){
+                this.gamesExceded = true;
+                
+            }else{
+                this.gamesExceded = false;
+            }
+          })
+
     }
    
 
     onSave() {
-        this.prestamoService.savePrestamo(this.prestamo).subscribe(reult => {
-            this.dialogRef.close();
-        });    
+        if(!this.gamePrested && !this.tiempoPrestamoExcedido && !this.fechaDevolucionInvalida && !this.gamesExceded){
+            this.prestamoService.savePrestamo(this.prestamo).subscribe(reult => {
+
+                this.dialogRef.close();
+            });  
+        }
+          
     }  
 
     onClose() {
