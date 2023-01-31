@@ -9,14 +9,18 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Nombre</mat-label>
-            <input type="text" matInput placeholder="Nombre de cliente" [(ngModel)]="client.name" name="name" required>
+            <input type="text" matInput placeholder="Nombre de cliente" [(ngModel)]="client.name" name="name" required
+            (ngModelChange) ="validarNombreCliente()" required>
             <mat-error>El nombre no puede estar vacío</mat-error>
+            
         </mat-form-field>
     </form>
 
     <div class="buttons">
         <button mat-stroked-button (click)="onClose()">Cerrar</button>
         <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+        <mat-error *ngIf="nameRepeated" >El nombre introducido ya está asignado a otro cliente</mat-error>
+
     </div>
 </div>
 

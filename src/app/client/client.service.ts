@@ -28,5 +28,9 @@ export class ClientService {
   deleteClient(idClient : number): Observable<any> {
     return this.http.delete('http://localhost:8080/client/'+idClient);
   } 
-  
+
+  checkRepeated(client: Client) :Observable<Boolean>{
+    return this.http.post<Boolean>('http://localhost:8080/client/check-repeated',client);
+    
+}
 }

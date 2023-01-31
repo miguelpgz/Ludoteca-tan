@@ -13,6 +13,8 @@ export class ClientEditComponent implements OnInit {
 
   client: Client;
 
+  nameRepeated: Boolean;
+
   constructor(
     public dialogRef: MatDialogRef<ClientEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -28,10 +30,34 @@ export class ClientEditComponent implements OnInit {
     }
   }
 
+  
+  validarNombreCliente(){
+
+    //Comprobamos desde el servicio si se repite el nombre en nuestra BBDD
+    this.clientService.checkRepeated(this.client).subscribe(
+        
+        result =>{
+        if (result){
+            
+            this.nameRepeated = true;
+            console.log(this.nameRepeated);
+            
+        }else{
+
+            this.nameRepeated = false;
+            console.log(this.nameRepeated);
+        }
+      })
+
+}
+
   onSave() {
-    this.clientService.saveClient(this.client).subscribe(result => {
-      this.dialogRef.close();
-    });    
+    if(!this.nameRepeated){
+      this.clientService.saveClient(this.client).subscribe(result => {
+        this.dialogRef.close();
+      });   
+    }
+     
   }  
 
   onClose() {

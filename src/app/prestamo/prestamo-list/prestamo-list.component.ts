@@ -25,9 +25,9 @@ export class PrestamoListComponent implements OnInit {
     totalElements: number = 0;
 
     dataSource = new MatTableDataSource<Prestamo>();
-    displayedColumns: string[] = ['id','gameName','clientName','fecha_prestamo','fecha_devolucion','action'];
-    filterGameTitle: string;
-    filterClientName: string;
+    displayedColumns: string[] = ['id','gameTitle','clientName','fecha_prestamo','fecha_devolucion','action'];
+    filterGame: Game;
+    filterClient: Client;
     filterDate: Date;
     prestamos: Prestamo[];
 
@@ -43,15 +43,18 @@ export class PrestamoListComponent implements OnInit {
 
     ngOnInit(): void {
 
-        // this.gameService.getGames().subscribe(
-        //     games => this.games = games
-        // );
+        this.gameService.getGames().subscribe(
+            games => this.games = games
+        );
 
-        // this.clientService.getClients().subscribe(
-        //     clients=> this.clients = clients
-        // );
-      this.loadPage();
+        this.clientService.getClients().subscribe(
+            clients => this.clients = clients
+        );
+        
+        this.loadPage();
     }
+      
+    
 
     loadPage(event?: PageEvent) {
         let pageable : Pageable =  {
@@ -91,8 +94,8 @@ export class PrestamoListComponent implements OnInit {
     }  
 
     onCleanFilter(): void {
-        this.filterGameTitle = null;
-        this.filterClientName= null;
+        this.filterGame = null;
+        this.filterClient= null;
         this.filterDate = null;
 
         this.onSearch();
@@ -100,17 +103,11 @@ export class PrestamoListComponent implements OnInit {
 
     onSearch(): void {
 
-        let gameTitle = this.filterGameTitle;
-        let clientName = this.filterClientName;
+        let gameId = this.filterGame != null ? this.filterGame.id : null;
+        let clientId = this.filterClient != null ? this.filterClient.id : null;
         let fecha = this.filterDate;
         
-        // console.log("gametitle:",gameTitle,"clientname",clientName,"fecha",fecha);
-
-        // this.prestamoService.getPrestamos(gameTitle, clientName,fecha).subscribe(
-        //     prestamos => this.prestamos = prestamos
-
-        // );
-
+    
         let pageable : Pageable =  {
             pageNumber: this.pageNumber,
             pageSize: this.pageSize,
@@ -120,7 +117,7 @@ export class PrestamoListComponent implements OnInit {
             }]
         }
 
-        this.prestamoService.getPrestamos(pageable,gameTitle, clientName,fecha).subscribe(data => {
+        this.prestamoService.getPrestamos(pageable,gameId, clientId,fecha).subscribe(data => {
 
             this.dataSource.data = data.content;
             this.pageNumber = data.pageable.pageNumber;
